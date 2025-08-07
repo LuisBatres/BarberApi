@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using BarberApiV1.CustomExceptions;
 using BarberApiV1.Data;
 using BarberApiV1.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,52 @@ public class RepositoryService : IRepository
     
     public async Task<TOutput> ExecuteStoredProcedureAsync<TOutput>(string storedProcedure, object parameters = null)
     {
-        return await ExecuteSP<TOutput>(_context, storedProcedure, parameters);
+        try
+        {
+            return await ExecuteSP<TOutput>(_context, storedProcedure, parameters);
+        }
+        catch (CustomHandledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            throw new CustomHandledException(e)
+            {
+                Function = "ExecuteStoredProcedureAsync",
+                Class = "RepositoryService",
+                FunctionArguments = new[]
+                {
+                    storedProcedure,
+                    parameters
+                }
+            };
+        }
     }
 
     public async Task<TOutput> ExecuteQueryAsync<TOutput>(string query, object parameters = null)
     {
-        return await ExecuteQuery<TOutput>(_context, query, parameters);
+        try
+        {
+            return await ExecuteQuery<TOutput>(_context, query, parameters);
+        }
+        catch (CustomHandledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            throw new CustomHandledException(e)
+            {
+                Function = "ExecuteStoredProcedureAsync",
+                Class = "RepositoryService",
+                FunctionArguments = new[]
+                {
+                    query,
+                    parameters
+                }
+            };
+        }
     }
     
     private async Task<TOutput> ExecuteQuery<TOutput>(DbContext context, string query, object parameters = null)
@@ -66,9 +107,22 @@ public class RepositoryService : IRepository
             var result = await DataReaderToObject<TOutput>(reader);
             return result;
         }
-        catch (Exception ex)
+        catch (CustomHandledException)
         {
             throw;
+        }
+        catch (Exception e)
+        {
+            throw new CustomHandledException(e)
+            {
+                Function = "ExecuteQuery",
+                Class = "RepositoryService",
+                FunctionArguments = new[]
+                {
+                    query,
+                    parameters
+                }
+            };
         }
     }
 
@@ -113,30 +167,58 @@ public class RepositoryService : IRepository
             var result = await DataReaderToObject<TOutput>(reader);
             return result;
         }
-        catch (Exception ex)
+        catch (CustomHandledException)
         {
             throw;
+        }
+        catch (Exception e)
+        {
+            throw new CustomHandledException(e)
+            {
+                Function = "ExecuteSP",
+                Class = "RepositoryService",
+                FunctionArguments = new[]
+                {
+                    storedProcedure,
+                    parameters
+                }
+            };
         }
     }
 
     private async Task<TOutput> DataReaderToObject<TOutput>(SqlDataReader reader)
     {
-        if (!await reader.ReadAsync())
-            return default;
-    
-        var columns = Enumerable.Range(0, reader.FieldCount)
-            .Select(i => reader.GetName(i))
-            .ToList();
-    
-        var dataDict = new Dictionary<string, object>();
-        foreach (var column in columns)
+        try
         {
-            var ordinal = reader.GetOrdinal(column);
-            dataDict[column] = reader.IsDBNull(ordinal) ? null : reader.GetValue(ordinal);
-        }
+            if (!await reader.ReadAsync())
+                return default;
     
-        var json = JsonConvert.SerializeObject(dataDict);
+            var columns = Enumerable.Range(0, reader.FieldCount)
+                .Select(i => reader.GetName(i))
+                .ToList();
+    
+            var dataDict = new Dictionary<string, object>();
+            foreach (var column in columns)
+            {
+                var ordinal = reader.GetOrdinal(column);
+                dataDict[column] = reader.IsDBNull(ordinal) ? null : reader.GetValue(ordinal);
+            }
+    
+            var json = JsonConvert.SerializeObject(dataDict);
 
-        return JsonConvert.DeserializeObject<TOutput>(json);
+            return JsonConvert.DeserializeObject<TOutput>(json);
+        }
+        catch (CustomHandledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            throw new CustomHandledException(e)
+            {
+                Function = "DataReaderToObject",
+                Class = "RepositoryService"
+            };
+        }
     }
 }

@@ -1,3 +1,4 @@
+using BarberApiV1.CustomExceptions;
 using BarberApiV1.Interfaces;
 using BarberApiV1.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -27,9 +28,37 @@ namespace BarberApiV1.Controllers
                 var barbers = await _barber.GetAllActiveBarbersAsync();
                 return Ok(barbers);
             }
-            catch (Exception ex)
+            catch (CustomHandledException cEx)
             {
-                return StatusCode(500, "Error interno del servidor");
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(499, exceptionResponse);
+            }
+            catch (Exception e)
+            {
+                CustomHandledException cEx = new CustomHandledException(e)
+                {
+                    Function = "GetAllBarbers",
+                    Class = "BarberController"
+                };
+                
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(500, exceptionResponse);
             }
         }
 

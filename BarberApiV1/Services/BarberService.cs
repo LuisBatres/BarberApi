@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using BarberApiV1.CustomExceptions;
 using BarberApiV1.Interfaces;
 using BarberApiV1.Models;
 using BarberApiV1.Repositories.Interfaces;
@@ -15,33 +16,81 @@ public class BarberService : IBarber
     }
     public async Task<List<Barber>> GetAllActiveBarbersAsync()
     {
-        var dataSet
-            = await _repository.ExecuteStoredProcedureAsync<DataSet>("getActiveBarbers");
-        
-        var barberList = new List<Barber>();
+        List<Barber> barberList = new List<Barber>();
 
-        if (dataSet != null && dataSet.Tables.Count > 0)
+        try
         {
-            foreach (DataRow row in dataSet.Tables[0].Rows)
+            var dataSet
+                = await _repository.ExecuteStoredProcedureAsync<DataSet>("getActiveBarbers");
+
+            if (dataSet != null && dataSet.Tables.Count > 0)
             {
-                var barber = new Barber
+                foreach (DataRow row in dataSet.Tables[0].Rows)
                 {
-                    BarberFirstName = row["BarberFirstName"]?.ToString(),
-                    BarberLastName = row["BarberLastName"]?.ToString(),
-                    BarberEmail = row["BarberEmail"]?.ToString() ?? string.Empty,
-                    BarberPhoneNumber = row["BarberPhoneNumber"]?.ToString() ?? string.Empty
-                };
-                
-                barberList.Add(barber);
+                    var barber = new Barber
+                    {
+                        BarberFirstName = row["BarberFirstName"]?.ToString(),
+                        BarberLastName = row["BarberLastName"]?.ToString(),
+                        BarberEmail = row["BarberEmail"]?.ToString() ?? string.Empty,
+                        BarberPhoneNumber = row["BarberPhoneNumber"]?.ToString() ?? string.Empty
+                    };
+
+                    barberList.Add(barber);
+                }
             }
+        }
+        catch (CustomHandledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            throw new CustomHandledException(e)
+            {
+                Function = "GetAllActiveBarbersAsync",
+                Class = "BarberService"
+            };
         }
         
         return barberList;
     }
 
-    public Task<Barber?> GetBarberByIdAsync(int id)
+    public async Task<Barber?> GetBarberByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var dataSet = await _repository.ExecuteStoredProcedureAsync<DataSet>("getBarber", new { id = id });
+
+            if (dataSet?.Tables?.Count > 0 && dataSet.Tables[0].Rows.Count > 0)
+            {
+                var row = dataSet.Tables[0].Rows[0];
+
+                return new Barber
+                {
+                    BarberId = Convert.ToInt32(row["BarberId"]),
+                    BarberFirstName = row["BarberFirstName"].ToString(),
+                    BarberLastName = row["BarberLastName"].ToString(),
+                    BarberEmail = row["BarberEmail"].ToString(),
+                    BarberPhoneNumber = row["BarberPhoneNumber"].ToString(),
+                    BarberHireDate = Convert.ToDateTime(row["BarberHireDate"]),
+                    IsActive = Convert.ToBoolean(row["IsActive"])
+                };
+            }
+        }
+        catch (CustomHandledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            throw new CustomHandledException(e)
+            {
+                Function = "GetBarberByIdAsync",
+                Class = "BarberService"
+            };
+        }
+        
+        return null;
     }
 
     public Task<Barber> CreateBarberAsync(BarberRequest request)
