@@ -4,7 +4,7 @@ namespace BarberApiV1.Interfaces;
 
 public interface IBarber
 {
-    Task<IEnumerable<Barber>> GetAllActiveBarbersAsync();
+    Task<List<Barber>> GetAllActiveBarbersAsync();
     
     Task<Barber?> GetBarberByIdAsync(int id);
     

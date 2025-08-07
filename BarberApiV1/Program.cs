@@ -1,4 +1,6 @@
 using BarberApiV1.Data;
+using BarberApiV1.Interfaces;
+using BarberApiV1.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,10 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
+
+// Services
+builder.Services.AddScoped<IBarber, BarberService>();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
