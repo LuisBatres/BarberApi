@@ -62,9 +62,6 @@ namespace BarberApiV1.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
-
                 var createdBarber = await _barber.CreateBarberAsync(request);
                 return CreatedAtAction(nameof(GetBarberById), new { id = createdBarber.BarberId }, createdBarber);
             }
@@ -87,9 +84,6 @@ namespace BarberApiV1.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
-
                 var updatedBarber = await _barber.UpdateBarberAsync(id, request);
                 if (updatedBarber == null)
                     return NotFound($"Barbero con ID {id} no encontrado");
