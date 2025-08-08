@@ -76,9 +76,37 @@ namespace BarberApiV1.Controllers
 
                 return Ok(barber);
             }
-            catch (Exception ex)
+            catch (CustomHandledException cEx)
             {
-                return StatusCode(500, "Error interno del servidor");
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(499, exceptionResponse);
+            }
+            catch (Exception e)
+            {
+                CustomHandledException cEx = new CustomHandledException(e)
+                {
+                    Function = "GetBarberById",
+                    Class = "BarberController"
+                };
+                
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(500, exceptionResponse);
             }
         }
 
@@ -94,13 +122,37 @@ namespace BarberApiV1.Controllers
                 var createdBarber = await _barber.CreateBarberAsync(request);
                 return CreatedAtAction(nameof(GetBarberById), new { id = createdBarber.BarberId }, createdBarber);
             }
-            catch (ArgumentException ex)
+            catch (CustomHandledException cEx)
             {
-                return BadRequest(ex.Message);
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(499, exceptionResponse);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return StatusCode(500, "Error interno del servidor");
+                CustomHandledException cEx = new CustomHandledException(e)
+                {
+                    Function = "CreateBarber",
+                    Class = "BarberController"
+                };
+                
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(500, exceptionResponse);
             }
         }
 
@@ -119,13 +171,37 @@ namespace BarberApiV1.Controllers
 
                 return Ok(updatedBarber);
             }
-            catch (ArgumentException ex)
+            catch (CustomHandledException cEx)
             {
-                return BadRequest(ex.Message);
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(499, exceptionResponse);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return StatusCode(500, "Error interno del servidor");
+                CustomHandledException cEx = new CustomHandledException(e)
+                {
+                    Function = "UpdateBarber",
+                    Class = "BarberController"
+                };
+                
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(500, exceptionResponse);
             }
         }
 
@@ -144,9 +220,37 @@ namespace BarberApiV1.Controllers
 
                 return NoContent();
             }
-            catch (Exception ex)
+            catch (CustomHandledException cEx)
             {
-                return StatusCode(500, "Error interno del servidor");
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(499, exceptionResponse);
+            }
+            catch (Exception e)
+            {
+                CustomHandledException cEx = new CustomHandledException(e)
+                {
+                    Function = "DeactivateBarber",
+                    Class = "BarberController"
+                };
+                
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(500, exceptionResponse);
             }
         }
 
@@ -161,9 +265,37 @@ namespace BarberApiV1.Controllers
                 var services = await _barber.GetBarberServicesAsync(id);
                 return Ok(services);
             }
-            catch (Exception ex)
+            catch (CustomHandledException cEx)
             {
-                return StatusCode(500, "Error interno del servidor");
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(499, exceptionResponse);
+            }
+            catch (Exception e)
+            {
+                CustomHandledException cEx = new CustomHandledException(e)
+                {
+                    Function = "GetBarberServices",
+                    Class = "BarberController"
+                };
+                
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(500, exceptionResponse);
             }
         }
 
@@ -179,9 +311,37 @@ namespace BarberApiV1.Controllers
                 var availability = await _barber.GetBarberAvailabilityAsync(id, date);
                 return Ok(availability);
             }
-            catch (Exception ex)
+            catch (CustomHandledException cEx)
             {
-                return StatusCode(500, "Error interno del servidor");
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(499, exceptionResponse);
+            }
+            catch (Exception e)
+            {
+                CustomHandledException cEx = new CustomHandledException(e)
+                {
+                    Function = "GetBarberAvailability",
+                    Class = "BarberController"
+                };
+                
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(500, exceptionResponse);
             }
         }
 
@@ -198,9 +358,37 @@ namespace BarberApiV1.Controllers
                 var appointments = await _barber.GetBarberAppointmentsAsync(id, startDate, endDate);
                 return Ok(appointments);
             }
-            catch (Exception ex)
+            catch (CustomHandledException cEx)
             {
-                return StatusCode(500, "Error interno del servidor");
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(499, exceptionResponse);
+            }
+            catch (Exception e)
+            {
+                CustomHandledException cEx = new CustomHandledException(e)
+                {
+                    Function = "GetBarberAppointments",
+                    Class = "BarberController"
+                };
+                
+                CustomHandledExceptionResponse exceptionResponse = new CustomHandledExceptionResponse()
+                {
+                    Function = cEx.Function,
+                    Class = cEx.Class,
+                    FunctionArguments = cEx.FunctionArguments,
+                    Line = cEx.Line,
+                    Message = cEx.Message
+                };
+                
+                return StatusCode(500, exceptionResponse);
             }
         }
     }
