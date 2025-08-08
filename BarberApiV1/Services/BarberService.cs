@@ -3,6 +3,7 @@ using BarberApiV1.CustomExceptions;
 using BarberApiV1.Interfaces;
 using BarberApiV1.Models;
 using BarberApiV1.Repositories.Interfaces;
+using Newtonsoft.Json;
 
 namespace BarberApiV1.Services;
 
@@ -93,9 +94,24 @@ public class BarberService : IBarber
         return null;
     }
 
-    public Task<Barber> CreateBarberAsync(BarberRequest request)
+    public async Task<Barber> CreateBarberAsync(BarberRequest request)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return new Barber();;
+        }
+        catch (CustomHandledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            throw new CustomHandledException(e)
+            {
+                Function = "CreateBarberAsync",
+                Class = "BarberService"
+            };
+        }
     }
 
     public Task<Barber?> UpdateBarberAsync(int id, BarberRequest request)

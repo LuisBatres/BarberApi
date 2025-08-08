@@ -1,6 +1,7 @@
 using BarberApiV1.CustomExceptions;
 using BarberApiV1.Interfaces;
 using BarberApiV1.Models;
+using BarberApiV1.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -119,6 +120,12 @@ namespace BarberApiV1.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                
+                RequestValidator.ValidateBarberRequest(request);
                 var createdBarber = await _barber.CreateBarberAsync(request);
                 return CreatedAtAction(nameof(GetBarberById), new { id = createdBarber.BarberId }, createdBarber);
             }
